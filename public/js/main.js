@@ -1,8 +1,13 @@
 import Compositor from "./compositor.js";
+import Timer from "./Timer.js";
 import { loadLevel } from "./loaders.js";
 import { loadBackgroundSprites } from "./sprites.js";
 import { createMario } from "./entities.js";
 import { createBackgroundLayer, createSpriteLayer } from "./layers.js";
+
+window.addEventListener("keydown", event => {
+  console.log(event);
+});
 
 const canvas = document.getElementById("screen");
 const context = canvas.getContext("2d");
@@ -17,26 +22,19 @@ Promise.all([createMario(), loadBackgroundSprites(), loadLevel("1-1")]).then(
     );
     comp.layers.push(backgroundLayer);
 
-    const gravity = 30;
+    const gravity = 2000;
     mario.pos.set(64, 180);
     mario.vel.set(200, -600);
 
     const spriteLayer = createSpriteLayer(mario);
     comp.layers.push(spriteLayer);
 
-    let deltaTime = 0;
-    let lastTime = 0;
-
-    function update(time) {
-      deltaTime = (time -lastTime)/1000;
-      comp.draw(context);
+    const timer = new Timer(1 / 60);
+    timer.update = function update(deltaTime) {
       mario.update(deltaTime);
-      mario.vel.y += gravity;
-      requestAnimationFrame(update);
-      lastTime = time;
-      // setTimeout(update, 1000 / 60, performance.now());
-    }
-
-    update(0);
+      comp.draw(context);
+      mario.vel.y += gravity * deltaTime;
+    };
+    timer.start();
   }
 );
