@@ -14,7 +14,6 @@ export default class Level {
   update(deltaTime) {
     this.entities.forEach(entity => {
       entity.update(deltaTime);
-
       this.tileCollider.test(entity);
     });
   }
