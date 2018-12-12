@@ -16,12 +16,31 @@ export default class KeyboardState {
   handleEvent(event) {
     const { keyCode } = event;
 
+    // Did not have key mapped
     if (!this.keyMap.has(keyCode)) {
-      // Did not have key mapped
       return;
     }
 
     event.preventDefault();
     const keyState = event.type === "keydown" ? PRESSED : RELEASED;
+
+    // Only register changes
+    if (this.keyStates.get(keyCode) === keyState) {
+      return;
+    }
+
+    this.keyStates.set(keyCode, keyState);
+    // console.log("KeyCode: ", keyCode);
+    // console.log("KeyState: ", keyState);
+    // Execute callback
+    this.keyMap.get(keyCode)(keyState);
+  }
+
+  listenTo(window) {
+    ["keydown", "keyup"].forEach(eventName => {
+      window.addEventListener(eventName, event => {
+        this.handleEvent(event);
+      });
+    });
   }
 }
