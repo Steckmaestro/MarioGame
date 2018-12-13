@@ -3,10 +3,9 @@ export default class Compositor {
     this.layers = [];
   }
 
-  // TODO: Check out higher order function
-  draw(context) {
+  draw(context, camera) {
     this.layers.forEach(layer => {
-      layer(context);
+      layer(context, camera);
     });
   }
 }

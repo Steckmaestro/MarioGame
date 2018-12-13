@@ -10,7 +10,7 @@ export function createBackgroundLayer(level, sprites) {
   });
 
   return function drawBackGroundLayer(context) {
-    context.drawImage(buffer, 0, 0);
+    context.drawImage(buffer, -cammera.pos.x, -camera.pos.y);
   };
 }
 
