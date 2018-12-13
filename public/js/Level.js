@@ -19,7 +19,6 @@ export default class Level {
       this.tileCollider.checkX(entity);
       entity.pos.y += entity.vel.y * deltaTime;
       this.tileCollider.checkY(entity);
-
       entity.vel.y += this.gravity * deltaTime;
     });
   }
