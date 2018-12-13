@@ -40,7 +40,13 @@ export function createCollisionLayer(level) {
       context.beginPath();
       context.rect(x * tileSize, y * tileSize, tileSize, tileSize);
       context.stroke();
-      // console.log("Would draw: ", x, y);
+    });
+
+    context.strokeStyle = "red";
+    level.entities.forEach(entity => {
+      context.beginPath();
+      context.rect(entity.pos.x, entity.pos.y, tileSize, tileSize);
+      context.stroke();
     });
 
     resolvedTiles.length = 0;
