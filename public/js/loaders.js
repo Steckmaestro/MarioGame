@@ -1,9 +1,22 @@
+import SpriteSheet from "./SpriteSheet.js";
 import Level from "./Level.js";
 import { loadBackgroundSprites } from "./sprites.js";
 import { createBackgroundLayer, createSpriteLayer } from "./layers.js";
 
 function fetchJSON(url) {
   return fetch(url).then(r => r.json());
+}
+
+function loadSpriteSheet(name) {
+  return fetchJSON(`/sprites/${name}.json`)
+    .then(sheetSpec => Promise.all([sheetSpec, loadImage(sheetSpec.imageURL)]))
+    .then(([sheetSpec, image]) => {
+      const sprites = new SpriteSheet(image, sheetSpec.tileW, sheetSpec.tileH);
+      sheetSpec.tiles.forEach(tile => {
+        sprites.defineTile(tile.name, tile.index[0], tile.index[1]);
+      });
+      return sprites;
+    });
 }
 
 export function loadImage(url) {
@@ -23,7 +36,7 @@ function createTiles(level, backgrounds) {
     for (let x = xStart; x < xEnd; x++) {
       for (let y = yStart; y < yEnd; y++) {
         level.tiles.set(x, y, {
-          name: background.tile
+          name: background.tile,
         });
       }
     }
@@ -48,7 +61,7 @@ function createTiles(level, backgrounds) {
 export function loadLevel(name) {
   return Promise.all([
     fetchJSON(`/levels/${name}.json`),
-    loadBackgroundSprites()
+    loadSpriteSheet("overworld"),
   ]).then(([levelSpec, backgroundSprites]) => {
     const level = new Level();
 
