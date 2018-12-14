@@ -11,7 +11,6 @@ const context = canvas.getContext("2d");
 
 Promise.all([createMario(), loadLevel("1-1")]).then(([mario, level]) => {
   const camera = new Camera();
-  window.camera = camera;
 
   mario.pos.set(64, 64);
 
@@ -21,6 +20,10 @@ Promise.all([createMario(), loadLevel("1-1")]).then(([mario, level]) => {
   //   createCollisionLayer(level),
   //   createCameraLayer(camera)
   // );
+
+  // window.camera = camera;
+  // window.mario = mario;
+  // window.level = level;
 
   const input = setupKeyboard(mario);
 
