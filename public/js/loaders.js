@@ -6,16 +6,25 @@ function loadJSON(url) {
   return fetch(url).then(r => r.json());
 }
 
-function loadSpriteSheet(name) {
+export function loadSpriteSheet(name) {
   return loadJSON(`/sprites/${name}.json`)
     .then(sheetSpec => {
       return Promise.all([sheetSpec, loadImage(sheetSpec.imageURL)]);
     })
     .then(([sheetSpec, image]) => {
       const sprites = new SpriteSheet(image, sheetSpec.tileW, sheetSpec.tileH);
-      sheetSpec.tiles.forEach(tile => {
-        sprites.defineTile(tile.name, tile.index[0], tile.index[1]);
-      });
+
+      if (sheetSpec.tiles) {
+        sheetSpec.tiles.forEach(tile => {
+          sprites.defineTile(tile.name, tile.index[0], tile.index[1]);
+        });
+      }
+
+      if (sheetSpec.frames) {
+        sheetSpec.frames.forEach(frameSpec => {
+          sprites.define(frameSpec.name, ...frameSpec.rect);
+        });
+      }
       return sprites;
     });
 }

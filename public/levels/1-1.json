@@ -35,7 +35,7 @@
     {
       "tile": "chance",
       "type": "ground",
-      "ranges": [[28, 1, 9]]
+      "ranges": [[28, 1, 9], [4, 1, 9]]
     }
   ]
 }
