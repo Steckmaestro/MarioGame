@@ -16,10 +16,10 @@ Promise.all([createMario(), loadLevel("1-1")]).then(([mario, level]) => {
 
   level.entities.add(mario);
 
-  // level.comp.layers.push(
-  //   createCollisionLayer(level),
-  //   createCameraLayer(camera)
-  // );
+  level.comp.layers.push(
+    createCollisionLayer(level),
+    createCameraLayer(camera)
+  );
 
   // window.camera = camera;
   // window.mario = mario;
