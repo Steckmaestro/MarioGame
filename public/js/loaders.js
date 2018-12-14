@@ -1,15 +1,16 @@
 import SpriteSheet from "./SpriteSheet.js";
 import Level from "./Level.js";
-import { loadBackgroundSprites } from "./sprites.js";
 import { createBackgroundLayer, createSpriteLayer } from "./layers.js";
 
-function fetchJSON(url) {
+function loadJSON(url) {
   return fetch(url).then(r => r.json());
 }
 
 function loadSpriteSheet(name) {
-  return fetchJSON(`/sprites/${name}.json`)
-    .then(sheetSpec => Promise.all([sheetSpec, loadImage(sheetSpec.imageURL)]))
+  return loadJSON(`/sprites/${name}.json`)
+    .then(sheetSpec => {
+      return Promise.all([sheetSpec, loadImage(sheetSpec.imageURL)]);
+    })
     .then(([sheetSpec, image]) => {
       const sprites = new SpriteSheet(image, sheetSpec.tileW, sheetSpec.tileH);
       sheetSpec.tiles.forEach(tile => {
@@ -37,6 +38,7 @@ function createTiles(level, backgrounds) {
       for (let y = yStart; y < yEnd; y++) {
         level.tiles.set(x, y, {
           name: background.tile,
+          type: background.type
         });
       }
     }
@@ -59,20 +61,21 @@ function createTiles(level, backgrounds) {
 }
 
 export function loadLevel(name) {
-  return Promise.all([
-    fetchJSON(`/levels/${name}.json`),
-    loadSpriteSheet("overworld"),
-  ]).then(([levelSpec, backgroundSprites]) => {
-    const level = new Level();
+  return loadJSON(`/levels/${name}.json`)
+    .then(levelSpec =>
+      Promise.all([levelSpec, loadSpriteSheet(levelSpec.spriteSheet)])
+    )
+    .then(([levelSpec, backgroundSprites]) => {
+      const level = new Level();
 
-    createTiles(level, levelSpec.backgrounds);
+      createTiles(level, levelSpec.backgrounds);
 
-    const backgroundLayer = createBackgroundLayer(level, backgroundSprites);
-    level.comp.layers.push(backgroundLayer);
+      const backgroundLayer = createBackgroundLayer(level, backgroundSprites);
+      level.comp.layers.push(backgroundLayer);
 
-    const spriteLayer = createSpriteLayer(level.entities);
-    level.comp.layers.push(spriteLayer);
+      const spriteLayer = createSpriteLayer(level.entities);
+      level.comp.layers.push(spriteLayer);
 
-    return level;
-  });
+      return level;
+    });
 }
