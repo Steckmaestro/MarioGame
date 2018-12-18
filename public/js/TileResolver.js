@@ -54,4 +54,4 @@ export default class TileResolver {
   }
 }
 
-window.TileResolver = TileResolver;
+// window.TileResolver = TileResolver;

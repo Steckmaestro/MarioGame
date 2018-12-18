@@ -1,7 +1,3 @@
-// const matrix = new Matrix();
-// matrix.set(5, 4, { name: "ground" });
-// const tile = matrix
-
 export class Matrix {
   constructor() {
     this.grid = [];
