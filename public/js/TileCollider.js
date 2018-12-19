@@ -16,12 +16,7 @@ export default class TileCollider {
       return;
     }
 
-    const matches = this.tiles.searchByRange(
-      x,
-      x,
-      entity.bounds.top,
-      entity.bounds.bottom
-    );
+    const matches = this.tiles.searchByRange(x, x, entity.bounds.top, entity.bounds.bottom);
 
     matches.forEach(match => {
       if (match.tile.type !== "ground") {
@@ -30,10 +25,10 @@ export default class TileCollider {
 
       if (entity.vel.x > 0) {
         if (entity.bounds.right > match.x1) {
-          entity.bounds.right = match.x1;
-          entity.vel.x = 0;
+          // entity.bounds.right = match.x1;
+          // entity.vel.x = 0;
 
-          entity.obstruct(Sides.RIGHT);
+          entity.obstruct(Sides.RIGHT, match);
         }
       } else if (entity.vel.x < 0) {
         if (entity.bounds.left < match.x2) {
@@ -56,12 +51,7 @@ export default class TileCollider {
       return;
     }
 
-    const matches = this.tiles.searchByRange(
-      entity.bounds.left,
-      entity.bounds.right,
-      y,
-      y
-    );
+    const matches = this.tiles.searchByRange(entity.bounds.left, entity.bounds.right, y, y);
 
     matches.forEach(match => {
       if (match.tile.type !== "ground") {

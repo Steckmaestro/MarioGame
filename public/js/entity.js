@@ -11,17 +11,34 @@ export const Sides = {
 export class Trait {
   constructor(name) {
     this.NAME = name;
+    this.tasks = [];
+  }
+
+  collides(us, them) {
+    // console.log("Collided with ", them);
+  }
+
+  queue(task) {
+    this.tasks.push(task);
+  }
+
+  finalize() {
+    this.tasks.forEach(task => task());
+    this.tasks.length = 0;
   }
 
   obstruct() {}
 
   update() {
-    console.warn("Unhandled update call in Trait");
+    // debugger;
+    console.warn("Unhandled update call in Trait", this);
   }
 }
 
 export default class Entity {
   constructor() {
+    this.canCollide = true;
+
     this.pos = new Vec2(0, 0);
     this.vel = new Vec2(0, 0);
     this.size = new Vec2(0, 0);
@@ -36,15 +53,29 @@ export default class Entity {
     this[trait.NAME] = trait;
   }
 
-  obstruct(side) {
+  obstruct(side, match) {
     this.traits.forEach(trait => {
-      trait.obstruct(this, side);
+      trait.obstruct(this, side, match);
     });
   }
 
-  update(deltaTime) {
+  collides(candidate) {
     this.traits.forEach(trait => {
-      trait.update(this, deltaTime);
+      trait.collides(this, candidate);
+    });
+  }
+
+  draw() {}
+
+  finalize() {
+    this.traits.forEach(trait => {
+      trait.finalize();
+    });
+  }
+
+  update(deltaTime, level) {
+    this.traits.forEach(trait => {
+      trait.update(this, deltaTime, level);
     });
 
     this.lifetime += deltaTime;

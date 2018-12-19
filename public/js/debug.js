@@ -15,9 +15,6 @@ export function setupMouseControl(canvas, entity, camera) {
         lastEvent.buttons === 2 &&
         lastEvent.type === "mousemove"
       ) {
-        // console.log("Camera pos x: ", camera.pos.x);
-        // console.log("Event offset x: ", event.offsetX);
-        // camera.pos.x -= event.offsetX - lastEvent.offsetX;
         // FIXME: Firefox ERROR changed code to
         camera.pos.x -= event.clientX - lastEvent.clientX;
       }

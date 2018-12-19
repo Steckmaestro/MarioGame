@@ -1,5 +1,6 @@
 import Compositor from "./compositor.js";
 import TileCollider from "./TileCollider.js";
+import EntityCollider from "./EntityCollider.js";
 import { Matrix } from "./math.js";
 
 export default class Level {
@@ -12,6 +13,7 @@ export default class Level {
     this.tiles = new Matrix();
 
     this.tileCollider = null;
+    this.entityCollider = new EntityCollider(this.entities);
   }
 
   setCollisionGrid(matrix) {
@@ -20,12 +22,28 @@ export default class Level {
 
   update(deltaTime) {
     this.entities.forEach(entity => {
-      entity.update(deltaTime);
+      // debugger;
+      entity.update(deltaTime, this);
+
       entity.pos.x += entity.vel.x * deltaTime;
-      this.tileCollider.checkX(entity);
+      if (entity.canCollide) {
+        this.tileCollider.checkX(entity);
+      }
+
       entity.pos.y += entity.vel.y * deltaTime;
-      this.tileCollider.checkY(entity);
+      if (entity.canCollide) {
+        this.tileCollider.checkY(entity);
+      }
+
       entity.vel.y += this.gravity * deltaTime;
+    });
+
+    this.entities.forEach(entity => {
+      this.entityCollider.check(entity);
+    });
+
+    this.entities.forEach(entity => {
+      entity.finalize();
     });
 
     this.totalTime += deltaTime;
