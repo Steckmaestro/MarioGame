@@ -4,9 +4,12 @@ import PlayerController from "./traits/PlayerController.js";
 import Timer from "./Timer.js";
 import { loadEntities } from "./entities.js";
 import { createLevelLoader } from "./loaders/level.js";
+import { loadFont } from "./loaders/font.js";
 import { setupKeyboard } from "./input.js";
-import { createCollisionLayer, createCameraLayer } from "./layers.js";
-import { setupMouseControl } from "./debug.js";
+import { createCollisionLayer } from "./layers/collision.js";
+import { createCameraLayer } from "./layers/camera.js";
+import { createDashboardLayer } from "./layers/dashboard.js";
+// import { setupMouseControl } from "./debug.js";
 
 function createPlayerEnv(playerEntity) {
   const playerEnv = new Entity();
@@ -18,7 +21,7 @@ function createPlayerEnv(playerEntity) {
 
 async function main(canvas) {
   const context = canvas.getContext("2d");
-  const entityFactory = await loadEntities();
+  const [entityFactory, font] = await Promise.all([loadEntities(), loadFont()]);
   const loadLevel = await createLevelLoader(entityFactory);
   const level = await loadLevel("1-1");
 
@@ -32,15 +35,15 @@ async function main(canvas) {
   level.entities.add(playerEnv);
 
   // window.mario = mario;
-
-  // level.comp.layers.push(createCollisionLayer(level));
-
   // window.camera = camera;
   // window.level = level;
 
-  const input = setupKeyboard(mario);
+  // level.comp.layers.push(createCollisionLayer(level));
+  level.comp.layers.push(createDashboardLayer(font, playerEnv));
 
   // setupMouseControl(canvas, mario, camera);
+
+  const input = setupKeyboard(mario);
 
   const timer = new Timer(1 / 60);
   timer.update = function update(deltaTime) {

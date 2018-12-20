@@ -1,5 +1,6 @@
 import Entity from "../Entity.js";
 import { loadSpriteSheet } from "../loaders.js";
+import Physics from "../traits/Physics.js";
 import Jump from "../traits/Jump.js";
 import Stomper from "../traits/Stomper.js";
 import Go from "../traits/Go.js";
@@ -48,11 +49,12 @@ function createMarioFactory(sprite) {
     mario.size.set(14, 16);
     // mario.offset.set(20, 32);
 
+    mario.addTrait(new Physics());
+    mario.addTrait(new Solid());
     mario.addTrait(new Jump());
     mario.addTrait(new Go());
     mario.addTrait(new Stomper());
     mario.addTrait(new Killable());
-    mario.addTrait(new Solid());
 
     mario.killable.removeAfter = 0;
 

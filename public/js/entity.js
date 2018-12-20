@@ -31,7 +31,7 @@ export class Trait {
 
   update() {
     // debugger;
-    console.warn("Unhandled update call in Trait", this);
+    // console.warn("Unhandled update call in Trait", this);
   }
 }
 
